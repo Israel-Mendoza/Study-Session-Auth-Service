@@ -17,7 +17,9 @@ fun Application.module() {
     val userRepository = InMemoryUserRepository()
     val userService = UserService(userRepository)
     val jwtService = JwtService(
-        jwtSecret = environment.config.property("jwt.secret").getString()
+        audience = environment.config.property("jwt.audience").getString(),
+        issuer = environment.config.property("jwt.issuer").getString(),
+        secret = environment.config.property("jwt.secret").getString(),
     )
 
     // Call the new configuration function

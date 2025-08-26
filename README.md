@@ -31,12 +31,17 @@ A Kotlin-based authentication service built with Ktor framework that provides JW
    cd study-session-auth-service
    ```
 
-2. Create environment configuration:
+2. In the application.yaml file, set your environment configuration:
 
-    ```bash
-    touch .env
+    ```yaml
+    jwt:
+        realm: "Study Session Auth App"
+        domain: "https://jwt-provider-domain/"
+        secret: "<here-goes-your-secret-key>"
+        issuer: "<here-goes-your-issuer>"
+        audience: "<here-goes-your-audience>"
     ```
-3. Set up environment variables:
+3. Or you can set up environment variables:
 
     ```text
     export JWT_SECRET="your-secret-key-here"

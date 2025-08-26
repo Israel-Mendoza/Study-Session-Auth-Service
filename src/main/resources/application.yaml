@@ -7,6 +7,6 @@ ktor:
 jwt:
   realm: "Study Session Auth App"
   domain: "https://jwt-provider-domain/"
-  secret: ${JWT_SECRET}
-  issuer: ${JWT_ISSUER}
-  audience: ${JWT_AUDIENCE}
+  secret: "<here-goes-your-secret-key>"
+  issuer: "<here-goes-your-issuer>"
+  audience: "<here-goes-your-audience>"
