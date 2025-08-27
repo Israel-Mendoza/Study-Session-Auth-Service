@@ -26,10 +26,6 @@ fun Application.configureRouting(
 ) {
     routing {
         route("/api/v1") {
-            get("/") {
-                call.respondText("Hello World!")
-                logger.warn("THIS!")
-            }
             post("/register") {
                 // Handle user registration
                 val authRequest = call.receive<RegistrationRequest>()
@@ -46,20 +42,6 @@ fun Application.configureRouting(
                         )
                     )
                     call.respond(HttpStatusCode.Created, successfulRegistration)
-                }
-            }
-
-            get("/users/{id}") {
-                val id = call.parameters["id"]?.toIntOrNull()
-                if (id == null) {
-                    call.respond(HttpStatusCode.BadRequest, "Invalid or missing user ID")
-                    return@get
-                }
-                val userRecord = userService.getUserById(id)
-                if (userRecord == null) {
-                    call.respond(HttpStatusCode.NotFound, "User not found")
-                } else {
-                    call.respond(HttpStatusCode.OK, userRecord)
                 }
             }
 
