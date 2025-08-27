@@ -49,6 +49,20 @@ fun Application.configureRouting(
                 }
             }
 
+            get("/users/{id}") {
+                val id = call.parameters["id"]?.toIntOrNull()
+                if (id == null) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid or missing user ID")
+                    return@get
+                }
+                val userRecord = userService.getUserById(id)
+                if (userRecord == null) {
+                    call.respond(HttpStatusCode.NotFound, "User not found")
+                } else {
+                    call.respond(HttpStatusCode.OK, userRecord)
+                }
+            }
+
             post("/login") {
                 val loginReq = call.receive<LoginRequest>()
                 val user = userService.authenticateUser(loginReq.username, loginReq.password)
