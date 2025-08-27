@@ -10,3 +10,8 @@ jwt:
   secret: "<here-goes-your-secret-key>"
   issuer: "<here-goes-your-issuer>"
   audience: "<here-goes-your-audience>"
+database:
+  url: "jdbc:mysql://localhost:3306/users_db"
+  driver: "com.mysql.cj.jdbc.Driver"
+  user: "<here-goes-your-db-username>"
+  password: "<here-goes-your-db-password>"

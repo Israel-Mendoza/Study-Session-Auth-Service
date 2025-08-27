@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
     implementation(libs.h2)
+    implementation(libs.mysql.connector.java)
 
     // OTHER
     implementation(libs.jbcrypt)
