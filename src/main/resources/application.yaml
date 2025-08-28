@@ -10,6 +10,7 @@ jwt:
   secret: "<here-goes-your-secret-key>"
   issuer: "<here-goes-your-issuer>"
   audience: "<here-goes-your-audience>"
+  expirationMs: 600000 # 10 minutes but can be configured
 database:
   url: "jdbc:mysql://localhost:3306/users_db"
   driver: "com.mysql.cj.jdbc.Driver"

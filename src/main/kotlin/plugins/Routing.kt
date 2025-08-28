@@ -56,7 +56,7 @@ fun Application.configureRouting(
                 get("/protected") {
                     val principal = call.principal<JWTPrincipal>()
                     val username = principal!!.getClaim("username", String::class)
-                    call.respond(HttpStatusCode.OK, "Hello, $username! SUCCESS!")
+                    call.respond(HttpStatusCode.OK, "Welcome, $username!")
                 }
             }
         }

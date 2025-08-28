@@ -10,15 +10,15 @@ class JwtService(
     private val audience: String,
     private val issuer: String,
     private val secret: String,
+    private val expirationMs: Long,
 ) {
 
-    // In a real application, these should be in environment variables or config files
-
     fun generateToken(user: User): TokenPayload {
-        val expiration = Date(System.currentTimeMillis() + 600000) // Token expires in 10 minutes
+        val expiration = Date(System.currentTimeMillis() + expirationMs)
 
-        val token = JWT.create().withAudience(audience).withIssuer(issuer).withClaim("id", user.id)
-            .withClaim("username", user.username).withExpiresAt(expiration) // Token expires in 10 minutes
+        val token = JWT.create().withAudience(audience).withIssuer(issuer)
+            .withClaim("id", user.id) // Include user ID in the token claims
+            .withClaim("username", user.username).withExpiresAt(expiration)
             .sign(Algorithm.HMAC256(secret))
 
         return TokenPayload(token = token, expiration = expiration.time)

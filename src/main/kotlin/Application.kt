@@ -17,13 +17,17 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
 
-    val userRepository = DbUserRepository()
-    val userService = UserService(userRepository)
+    // Initialize JwtService with configuration values
     val jwtService = JwtService(
         audience = environment.config.property("jwt.audience").getString(),
         issuer = environment.config.property("jwt.issuer").getString(),
         secret = environment.config.property("jwt.secret").getString(),
+        expirationMs = environment.config.property("jwt.expirationMs").getString().toLong()
     )
+
+    // Initialize UserService with DbUserRepository
+    val userRepository = DbUserRepository()
+    val userService = UserService(userRepository)
 
     // Call the new configuration function
     configureDatabase()
