@@ -4,8 +4,8 @@ import dev.artisra.auth.models.RegistrationRequest
 import dev.artisra.auth.models.LoginRequest
 import dev.artisra.auth.models.RegistrationResponse
 import dev.artisra.auth.models.UserResponse
-import dev.artisra.services.JwtService
-import dev.artisra.services.UserService
+import dev.artisra.services.impl.JwtServiceImpl
+import dev.artisra.services.impl.UserServiceImpl
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
@@ -21,8 +21,8 @@ import java.time.LocalDateTime
 private val logger = LoggerFactory.getLogger(Application::class.java)
 
 fun Application.configureRouting(
-    userService: UserService,
-    jwtService: JwtService,
+    userService: UserServiceImpl,
+    jwtServiceImpl: JwtServiceImpl,
 ) {
     routing {
         route("/api/v1") {
@@ -48,7 +48,7 @@ fun Application.configureRouting(
             post("/login") {
                 val loginReq = call.receive<LoginRequest>()
                 val user = userService.authenticateUser(loginReq.username, loginReq.password)
-                val token = jwtService.generateToken(user)
+                val token = jwtServiceImpl.generateToken(user)
                 call.respond(HttpStatusCode.OK, token)
             }
 

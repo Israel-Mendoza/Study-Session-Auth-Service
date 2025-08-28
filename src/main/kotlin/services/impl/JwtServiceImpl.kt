@@ -1,19 +1,20 @@
-package dev.artisra.services
+package dev.artisra.services.impl
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import dev.artisra.auth.models.TokenPayload
 import dev.artisra.models.User
-import java.util.*
+import dev.artisra.services.interfaces.JwtService
+import java.util.Date
 
-class JwtService(
+class JwtServiceImpl(
     private val audience: String,
     private val issuer: String,
     private val secret: String,
     private val expirationMs: Long,
-) {
+) : JwtService {
 
-    fun generateToken(user: User): TokenPayload {
+    override fun generateToken(user: User): TokenPayload {
         val expiration = Date(System.currentTimeMillis() + expirationMs)
 
         val token = JWT.create().withAudience(audience).withIssuer(issuer)
@@ -24,7 +25,7 @@ class JwtService(
         return TokenPayload(token = token, expiration = expiration.time)
     }
 
-    fun verifyToken(token: String): User? {
+    override fun verifyToken(token: String): User? {
         val verifier = JWT.require(Algorithm.HMAC256(secret)).withAudience(audience).withIssuer(issuer).build()
 
         return try {

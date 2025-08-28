@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.jbcrypt)
 
     // TESTING
+    testImplementation("com.zaxxer:HikariCP:5.1.0")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

@@ -1,13 +1,14 @@
-package dev.artisra.services
+package dev.artisra.services.impl
 
 import dev.artisra.auth.models.RegistrationRequest
 import dev.artisra.models.User
 import dev.artisra.models.UserRecord
 import dev.artisra.repositories.interfaces.UserRepository
+import dev.artisra.services.interfaces.UserService
 import org.mindrot.jbcrypt.BCrypt
 
-class UserService(private val userRepository: UserRepository) {
-    suspend fun registerUser(userRequest: RegistrationRequest): UserRecord? {
+class UserServiceImpl(private val userRepository: UserRepository) : UserService {
+    override suspend fun registerUser(userRequest: RegistrationRequest): UserRecord? {
         // Implement user registration logic here
         if (userRepository.getUserByUsername(userRequest.username) != null) {
             return null // Username already exists
@@ -21,13 +22,13 @@ class UserService(private val userRepository: UserRepository) {
         return userRepository.getUserById(newUserId)
     }
 
-    suspend fun getUserByUsername(username: String) = userRepository.getUserByUsername(username)
+    override suspend fun getUserByUsername(username: String) = userRepository.getUserByUsername(username)
 
-    suspend fun getUserByEmail(email: String) = userRepository.getUserByEmail(email)
+    override suspend fun getUserByEmail(email: String) = userRepository.getUserByEmail(email)
 
-    suspend fun getUserById(id: Int) = userRepository.getUserById(id)
+    override suspend fun getUserById(id: Int) = userRepository.getUserById(id)
 
-    suspend fun authenticateUser(username: String, password: String): User {
+    override suspend fun authenticateUser(username: String, password: String): User {
         val userRecord = userRepository.getUserByUsername(username)
             ?: throw IllegalArgumentException("User not found")
         if (!BCrypt.checkpw(password, userRecord.passwordHash)) {
@@ -36,9 +37,9 @@ class UserService(private val userRepository: UserRepository) {
         return User(id = userRecord.id, username = userRecord.username, passwordHash = userRecord.passwordHash)
     }
 
-    suspend fun updateUser(userId: Int, username: String?, email: String?) = userRepository.updateUser(userId, username, email)
+    override suspend fun updateUser(userId: Int, username: String?, email: String?) = userRepository.updateUser(userId, username, email)
 
-    suspend fun deleteUser(userId: Int) = userRepository.deleteUser(userId)
+    override suspend fun deleteUser(userId: Int) = userRepository.deleteUser(userId)
 
-    suspend fun listUsers() = userRepository.listUsers()
+    override suspend fun listUsers() = userRepository.listUsers()
 }
