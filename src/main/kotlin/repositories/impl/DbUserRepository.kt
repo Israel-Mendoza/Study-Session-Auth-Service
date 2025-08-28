@@ -18,7 +18,7 @@ class DbUserRepository : UserRepository {
         email: String,
         hashedPassword: String,
     ): Int = transaction {
-        logger.warn("Username: $username, Email: $email, HashedPassword: $hashedPassword")
+        logger.info("Creating new user with username: \"$username\" and email: \"$email\"")
         val userId = UserTable.insert {
             it[UserTable.username] = username
             it[UserTable.email] = email
@@ -28,13 +28,12 @@ class DbUserRepository : UserRepository {
     }
 
     override suspend fun getUserByUsername(username: String): UserRecord? = transaction {
-        logger.warn("USING USERNAME: $username")
         val result = UserTable.select(UserTable.id, UserTable.username, UserTable.email, UserTable.passwordHash)
             .where { UserTable.username eq username }.map {
                 UserMapper.fromResultRowToRecord(it)
             }.singleOrNull()
 
-        logger.warn("getUserByUsername result for '$username': $result")
+        logger.info("getUserByUsername result for '$username': $result")
         return@transaction result
     }
 
@@ -46,21 +45,22 @@ class DbUserRepository : UserRepository {
     }
 
     override suspend fun getUserById(id: Int): UserRecord? = transaction {
-        logger.warn("USING ID: $id")
         val result = UserTable.select(UserTable.id, UserTable.username, UserTable.email, UserTable.passwordHash)
             .where { UserTable.id eq id }.map {
                 UserMapper.fromResultRowToRecord(it)
             }.singleOrNull()
-        logger.warn("getUserById result for ID '$id': $result")
+        logger.info("getUserById result for ID '$id': $result")
         return@transaction result
     }
 
     override suspend fun updateUser(id: Int, username: String?, email: String?): Boolean = transaction {
         val updatedRecords = UserTable.update({ UserTable.id eq id }) {
             if (username != null) {
+                logger.info("Updating username for user ID $id to '$username'")
                 it[UserTable.username] = username
             }
             if (email != null) {
+                logger.info("Updating email for user ID $id to '$email'")
                 it[UserTable.email] = email
             }
         }
@@ -69,6 +69,7 @@ class DbUserRepository : UserRepository {
 
     override suspend fun deleteUser(id: Int): Boolean = transaction {
         val deletedRecords = UserTable.deleteWhere { UserTable.id eq id }
+        logger.info("Deleted $deletedRecords record(s) for user ID $id")
         return@transaction deletedRecords > 0
     }
 

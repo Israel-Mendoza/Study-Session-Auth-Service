@@ -32,9 +32,12 @@ fun Application.configureRouting(
                 val userRecord = userService.registerUser(authRequest)
                 val localDateTimeStr = LocalDateTime.now().toString()
                 if (userRecord == null) {
+                    val warnMessage = "Registration failed for username: ${authRequest.username}, email: ${authRequest.email}"
+                    logger.warn(warnMessage)
                     val failureResponse = RegistrationResponse("User or email exists already", localDateTimeStr, null)
                     call.respond(HttpStatusCode.BadRequest, failureResponse)
                 } else {
+                    logger.info("User with username: ${authRequest.username} and email: ${authRequest.email} registered successfully.")
                     val successfulRegistration = RegistrationResponse(
                         "User created successfully", localDateTimeStr, UserResponse(
                             id = userRecord.id,
@@ -49,6 +52,7 @@ fun Application.configureRouting(
                 val loginReq = call.receive<LoginRequest>()
                 val user = userService.authenticateUser(loginReq.username, loginReq.password)
                 val token = jwtServiceImpl.generateToken(user)
+                logger.debug("Generated token for user ${user.username}")
                 call.respond(HttpStatusCode.OK, token)
             }
 
