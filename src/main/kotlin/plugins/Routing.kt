@@ -2,10 +2,12 @@ package dev.artisra.plugins
 
 import dev.artisra.auth.models.RegistrationRequest
 import dev.artisra.auth.models.LoginRequest
+import dev.artisra.auth.models.LoginResponse
 import dev.artisra.auth.models.RegistrationResponse
 import dev.artisra.auth.models.UserResponse
-import dev.artisra.services.impl.JwtServiceImpl
-import dev.artisra.services.impl.UserServiceImpl
+import dev.artisra.services.impl.UserService
+import dev.artisra.services.interfaces.JwtService
+import dev.artisra.utils.authenticateUserOrRespond
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.auth.authenticate
@@ -21,8 +23,8 @@ import java.time.LocalDateTime
 private val logger = LoggerFactory.getLogger(Application::class.java)
 
 fun Application.configureRouting(
-    userService: UserServiceImpl,
-    jwtServiceImpl: JwtServiceImpl,
+    userService: UserService,
+    jwtService: JwtService,
 ) {
     routing {
         route("/api/v1") {
@@ -32,7 +34,8 @@ fun Application.configureRouting(
                 val userRecord = userService.registerUser(authRequest)
                 val localDateTimeStr = LocalDateTime.now().toString()
                 if (userRecord == null) {
-                    val warnMessage = "Registration failed for username: ${authRequest.username}, email: ${authRequest.email}"
+                    val warnMessage =
+                        "Registration failed for username: ${authRequest.username}, email: ${authRequest.email}"
                     logger.warn(warnMessage)
                     val failureResponse = RegistrationResponse("User or email exists already", localDateTimeStr, null)
                     call.respond(HttpStatusCode.BadRequest, failureResponse)
@@ -50,10 +53,17 @@ fun Application.configureRouting(
 
             post("/login") {
                 val loginReq = call.receive<LoginRequest>()
-                val user = userService.authenticateUser(loginReq.username, loginReq.password)
-                val token = jwtServiceImpl.generateToken(user)
+                val user = authenticateUserOrRespond(call, loginReq, userService) ?: return@post
+
+                val token = jwtService.generateToken(user)
+                val loginRes = LoginResponse(
+                    message = "Login successful",
+                    token = token.token,
+                    expiration = token.expiration,
+                    timestamp = LocalDateTime.now().toString()
+                )
                 logger.debug("Generated token for user ${user.username}")
-                call.respond(HttpStatusCode.OK, token)
+                call.respond(HttpStatusCode.OK, loginRes)
             }
 
             authenticate {

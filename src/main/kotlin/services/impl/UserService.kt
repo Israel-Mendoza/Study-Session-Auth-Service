@@ -7,7 +7,7 @@ import dev.artisra.repositories.interfaces.UserRepository
 import dev.artisra.services.interfaces.UserService
 import org.mindrot.jbcrypt.BCrypt
 
-class UserServiceImpl(private val userRepository: UserRepository) : UserService {
+class UserService(private val userRepository: UserRepository) : UserService {
     override suspend fun registerUser(userRequest: RegistrationRequest): UserRecord? {
         // Implement user registration logic here
         if (userRepository.getUserByUsername(userRequest.username) != null) {
