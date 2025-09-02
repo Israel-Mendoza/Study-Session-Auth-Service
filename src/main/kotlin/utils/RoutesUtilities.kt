@@ -3,7 +3,7 @@ package dev.artisra.utils
 import dev.artisra.auth.models.LoginRequest
 import dev.artisra.auth.models.LoginResponse
 import dev.artisra.models.User
-import dev.artisra.services.impl.UserService
+import dev.artisra.services.impl.UserServiceImpl
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
@@ -15,10 +15,10 @@ private val logger = LoggerFactory.getLogger("RoutesUtilities")
 suspend fun authenticateUserOrRespond(
     call: ApplicationCall,
     loginReq: LoginRequest,
-    userService: UserService
+    userServiceImpl: UserServiceImpl
 ): User? {
     return try {
-        val user = userService.authenticateUser(loginReq.username, loginReq.password)
+        val user = userServiceImpl.authenticateUser(loginReq.username, loginReq.password)
         logger.info("User with username: ${loginReq.username} authenticated successfully.")
         user
     } catch (e: IllegalArgumentException) {

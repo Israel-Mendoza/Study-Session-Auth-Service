@@ -46,4 +46,10 @@ dependencies {
     testImplementation("com.zaxxer:HikariCP:5.1.0")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("io.ktor:ktor-client-content-negotiation:2.3.9")
+    testImplementation("io.ktor:ktor-client-cio:2.3.9")
+    testImplementation("io.ktor:ktor-client-mock:2.3.9")
+
+    // Mocking library for Kotlin
+    testImplementation("io.mockk:mockk:1.13.11")
 }

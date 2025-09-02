@@ -4,7 +4,7 @@ import dev.artisra.database.config.configureDatabase
 import dev.artisra.plugins.configureRouting
 import dev.artisra.plugins.configureSerialization
 import dev.artisra.services.impl.JwtServiceImpl
-import dev.artisra.services.impl.UserService
+import dev.artisra.services.impl.UserServiceImpl
 import dev.artisra.plugins.configureSecurity
 import dev.artisra.repositories.impl.DbUserRepository
 import io.ktor.server.application.*
@@ -27,7 +27,7 @@ fun Application.module() {
 
     // Initialize UserService with DbUserRepository
     val userRepository = DbUserRepository()
-    val userServiceImpl = UserService(userRepository)
+    val userServiceImpl = UserServiceImpl(userRepository)
 
     // Call the new configuration function
     configureDatabase()

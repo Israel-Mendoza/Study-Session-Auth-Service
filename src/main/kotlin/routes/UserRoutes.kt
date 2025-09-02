@@ -6,7 +6,7 @@ import dev.artisra.auth.models.LoginRequest
 import dev.artisra.auth.models.LoginResponse
 import dev.artisra.auth.models.RegistrationResponse
 import dev.artisra.auth.models.UserResponse
-import dev.artisra.services.impl.UserService
+import dev.artisra.services.impl.UserServiceImpl
 import dev.artisra.services.interfaces.JwtService
 import dev.artisra.utils.authenticateUserOrRespond
 import io.ktor.http.*
@@ -20,11 +20,11 @@ import java.time.LocalDateTime
 
 private val logger = LoggerFactory.getLogger("UserRoutes")
 
-fun Route.userRoutes(userService: UserService, jwtService: JwtService) {
+fun Route.userRoutes(userServiceImpl: UserServiceImpl, jwtService: JwtService) {
     post("/register") {
         // Handle user registration
         val authRequest = call.receive<RegistrationRequest>()
-        val userRecord = userService.registerUser(authRequest)
+        val userRecord = userServiceImpl.registerUser(authRequest)
         val localDateTimeStr = LocalDateTime.now().toString()
         if (userRecord == null) {
             val warnMessage = "Registration failed for username: ${authRequest.username}, email: ${authRequest.email}"
@@ -45,7 +45,7 @@ fun Route.userRoutes(userService: UserService, jwtService: JwtService) {
 
     post("/login") {
         val loginReq = call.receive<LoginRequest>()
-        val user = authenticateUserOrRespond(call, loginReq, userService) ?: return@post
+        val user = authenticateUserOrRespond(call, loginReq, userServiceImpl) ?: return@post
 
         val token = jwtService.generateToken(user)
         val loginRes = LoginResponse(

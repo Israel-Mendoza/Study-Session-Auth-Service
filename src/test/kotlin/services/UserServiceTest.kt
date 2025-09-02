@@ -1,7 +1,7 @@
 package dev.artisra.services
 
 import dev.artisra.auth.models.RegistrationRequest
-import dev.artisra.services.impl.UserService
+import dev.artisra.services.impl.UserServiceImpl
 
 import dev.artisra.utils.mocks.MockUserRepository
 import kotlinx.coroutines.test.runTest
@@ -16,13 +16,13 @@ import kotlin.test.assertFailsWith
 
 class UserServiceTest {
 
-    private lateinit var userService: UserService
+    private lateinit var userService: UserServiceImpl
     private lateinit var mockUserRepository: MockUserRepository
 
     @BeforeTest
     fun setUp() {
         mockUserRepository = MockUserRepository()
-        userService = UserService(mockUserRepository)
+        userService = UserServiceImpl(mockUserRepository)
     }
 
     @Test
